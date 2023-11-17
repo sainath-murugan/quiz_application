@@ -1,0 +1,7 @@
+# Quiz Application
+
+This dynamic application, developed in the Django Framework, boasts over 3000 lines of code to support a robust quiz creation and participation platform. Leveraging the power of `AbstractUser`, a custom user model was implemented for enhanced flexibility. The project caters to two distinct user profiles: educators and students, each with specialized functionalities. The implementation of thorough form validations enhances the overall security of the application.
+
+A notable feature is the incorporation of `Two-Factor Authentication` using the `pyotp` package. This additional layer of security ensures the safeguarding of user accounts. Furthermore, the utilization of the `user-agents` package aids in identifying the specifications of the user's system and provides detailed information about account activity. This feature enhances user awareness regarding the utilization of their accounts across different devices.
+
+In summary, the application stands as a dynamic and secure educational platform, offering a seamless quiz experience for both educators and students. The use of advanced security measures, including Two-Factor Authentication, underscores the commitment to user account protection and overall system integrity.

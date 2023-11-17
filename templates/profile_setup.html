@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block title %}<title>Profile Setup</title>{% endblock %}
+{% block content %}
+
+	<div class="container py-5">
+		<h1 class="mb-5 text-center">Profile </h1>
+		<form method="POST" action="{% url 'profile_setup' %}">
+
+			{% csrf_token %}
+			{{form|crispy}}
+
+			<button class="btn btn-primary d-grid gap-2 col-6 mx-auto fw-bold mt-4" type="submit">submit</button>
+		</form>
+	</div>
+
+{% endblock %}

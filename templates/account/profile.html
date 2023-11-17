@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block title %}<title>Profile</title>{% endblock %}
+{% block content %}
+
+  <style>  
+      .links{
+          color: dimgrey;
+      }
+      .links:hover{
+          color: black; 
+      }
+  </style>
+
+  <!-- navbar -->
+  <nav class="navbar navbar-dark bg-dark navbar-expand-md text-light navbar-nav-scroll fixed-top py-4" id="nav">
+      <div class="container">
+        {% if request.user.user_profile_educator %}
+          <p class="navbar-brand"><span class="h3">Educator Dashboard</span></p>
+        {% elif request.user.user_profile_student %}
+        <p class="navbar-brand"><span class="h3">Student Dashboard</span></p>
+        {% endif %}
+          <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+              id="navbar-toggler">
+              <i class="fas fa-angle-down" id="toggle-button"></i>
+          </button>
+          <div class="navbar-collapse collapse" id="navbar">
+              <ul class="navbar-nav ms-auto">
+                {% if request.user.user_profile_educator %}
+                  <li class="nav-item"><a href="{% url 'educator_dashboard' %}" class="nav-link text-light lead"><span
+                    id="nav-link">Dashboard</span></a></li> 
+                {% elif request.user.user_profile_student %}
+                  <li class="nav-item"><a href="{% url 'student_dashboard' %}" class="nav-link text-light lead"><span
+                    id="nav-link">Dashboard</span></a></li>
+                {% endif %} 
+              </ul>
+          </div>
+      </div>
+    </nav>
+    <!-- end navbar -->
+    
+  <div class="container py-5">
+
+        <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p class="text-center fw-bold h5">Are you sure want to logout?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary d-grid gap-2 col-5 mx-auto" data-bs-dismiss="modal">Close</button>
+              <a href="{% url 'account:logout' %}" class="d-grid gap-2 col-5 mx-auto" style="text-decoration: none;"><button type="button" class="btn btn-danger" >Yes</button></a>
+            </div>   
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'account:delete_login_history' %}">    
+
+            {% csrf_token %}
+            <div class="modal-header">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p class="text-center fw-bold h5">Are you sure want to delete the login History?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary d-grid gap-2 col-5 mx-auto fw-bold" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger d-grid gap-2 col-5 mx-auto fw-bold" style="text-decoration: none;">Yes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+      <section class="align-items-center text-center">
+          <h1 class="mb-5 text-center">Profile</h1>
+          {% if request.user.user_profile_educator %}
+          <p class="text-secondary h5">Email: <span class="fw-bold">{{request.user.email}}</span> </p>
+          <p class="text-secondary h5">Date Of Birth: <span class="fw-bold"> {{request.user.user_profile_educator.DOB}}</span></p>
+          <p class="text-secondary h5">College name: <span class="fw-bold">{{request.user.user_profile_educator.college_name}}</span> </p>
+          <p class="text-secondary h5">Gender: <span class="fw-bold">{{request.user.user_profile_educator.gender}}</span></p>
+          <p class="text-secondary h5">Phone number: <span class="fw-bold">{{request.user.user_profile_educator.phone_number}}</span> </p>
+          
+          {% elif request.user.user_profile_student %}
+          <p class="text-secondary h5">Email: <span class="fw-bold">{{request.user.email}}</span> </p>
+          <p class="text-secondary h5">Date Of Birth: <span class="fw-bold"> {{request.user.user_profile_student.DOB}}</span></p>
+          <p class="text-secondary h5">College name: <span class="fw-bold">{{request.user.user_profile_student.college_name}}</span> </p>
+          <p class="text-secondary h5">Gender: <span class="fw-bold">{{request.user.user_profile_student.gender}}</span></p>
+          <p class="text-secondary h5">Phone number: <span class="fw-bold">{{request.user.user_profile_student.phone_number}}</span></p>
+          <p class="text-secondary h5">Course: <span class="fw-bold">{{request.user.user_profile_student.course}}</span></p>
+          <p class="text-secondary h5">Register Number: <span class="fw-bold">{{request.user.user_profile_student.register_number}}</span></p>
+          <p class="text-secondary h5">Year: <span class="fw-bold">{{request.user.user_profile_student.year}}st</span></p>
+          {% endif %}
+
+          <hr>
+          <p class="links"><a href="{% url 'account:change_password' %}" class="h3 mb-3" style="text-decoration: none;"> Change Password</a></p>
+          <p class="links h3 mb-3" style="text-decoration: none;" data-bs-toggle="modal"
+          data-bs-target="#exampleModal"><span style="cursor: pointer;">Logout</span></p>
+          <p class="links"><a href="{% url 'account:two_factor' %}" class="h3 mb-3" style="text-decoration: none;">Two Factor Authentication</a></p>
+          {% if request.user.user_ticket %}
+
+          {% else %}
+            <p class="links"><a href="{% url 'account:create_ticket' %}" class="h3 mb-3" style="text-decoration: none;">Create Ticket</a></p>
+          {% endif %}
+          
+          <hr>
+          {% if request.user.user_history.all %}
+            <p class="h3 mb-3 py-4 text-secondary">Account Login History</p>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Device</th>
+                    <th scope="col">Browser</th>
+                    <th scope="col">Bot</th>
+                    <th scope="col">Logged In</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for i in  request.user.user_history.all %}
+                        <tr scop="row">
+                            <td>{{ i.device }}</td>
+                            <td>{{ i.browser }}</td>
+                            <td>{{ i.bot }}</td>
+                            <td>{{ i.logged_in }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              <button type="button" class="btn btn-danger fw-bold d-grid gap-2 col-6 mx-auto mb-4" data-bs-toggle="modal"
+                  data-bs-target="#exampleModal2">Delete History</button>
+              <hr>
+          {% endif %}
+          {% if request.user.user_ticket %}
+            
+            <p class="h3 mb-3 py-3 text-secondary">Yout Ticket</p>
+            <p class="fw-bold h5 text-secondary">Title: <span class="h5">{{request.user.user_ticket.title}}</span></p>
+            <p class="fw-bold"> Note: After resolving your problem your ticket will be deleted</p>
+          {% endif %}
+      </section>
+  </div>
+
+{% endblock %}

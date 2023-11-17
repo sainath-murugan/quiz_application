@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block title %}<title>Attend Quiz</title>{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <p class="mt-5 h3 text-center mb-3">Attend the quiz</p>
+        <form action="{% url 'attend_quiz' id2 %}" method="POST">
+
+            {% csrf_token %}
+            {% for items in question %}
+                <p class="h4">{{items.question}}</p>
+                <input type="radio" name="question_{{items.question}}" value="{{items.choice_one}}" required>
+                <label class="lead"> {{items.choice_one}}</label><br>
+
+                <input type="radio" name="question_{{items.question}}" value="{{items.choice_two}}">
+                <label class="lead"> {{items.choice_two}}</label><br>
+
+                <input type="radio" name="question_{{items.question}}" value="{{items.choice_three}}">
+                <label class="lead"> {{items.choice_three}}</label><br>
+
+                <input type="radio" name="question_{{items.question}}" value="{{items.choice_four}}">
+                <label class="lead"> {{items.choice_four}}</label><br>
+                <hr>
+            {% endfor %}
+            <div class="mt-5 mb-5">
+                <button class="btn btn-primary d-grid gap-2 col-6 mx-auto fw-bold" type="submit">Submit quiz</button>
+            </div>     
+        </form>
+    </div>
+{% endblock %}

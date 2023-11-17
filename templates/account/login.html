@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block title %}<title>Login</title>{% endblock %}
+{% block content %}
+
+  <div class="container py-5">
+    <h1 class="mb-5 text-center">Login</h1>
+    <form method="POST" action="{% url 'account:login' %}">
+
+      {% csrf_token %}
+      {{ form|crispy}}
+
+      <input type="hidden" name="next" value="{{ request.GET.next }}"/> 
+      <button class="btn btn-primary d-grid gap-2 col-6 mx-auto fw-bold mt-5" type="submit">Login</button>
+    </form>
+    <p class="text-center mt-5 fw-bold">Don't have an account? <a href="{% url 'account:signup' %}" style="text-decoration: none;">Create an account</a></p>
+    <p class="text-center fw-bold">forgot password? <a href="{% url 'account:forgot_password' %}" style="text-decoration: none;">forgot password</a></p>
+  </div>
+
+{% endblock %}

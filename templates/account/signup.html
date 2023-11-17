@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block title %}<title>Signup</title>{% endblock %}
+{% block content %}
+
+	<div class="container py-5">
+		<h1 class="mb-5 text-center">Signup</h1>
+		<form method="POST" action="{% url 'account:signup' %}">
+
+			{% csrf_token %}
+			{{form|crispy }}                   
+
+			<button class="btn btn-primary d-grid gap-2 col-6 mx-auto fw-bold mt-4" type="submit">Signup</button>
+		</form>
+		<p class="text-center h6 mt-5 fw-bold">If you already have an account, <a href="{% url 'account:login' %}"  style="text-decoration: none;">login</a> instead.</p>
+	</div>
+
+{% endblock %}

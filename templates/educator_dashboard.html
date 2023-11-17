@@ -1,0 +1,160 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block title %}<title>Educator Dashboard</title>{% endblock %}
+{% block content %}
+
+  <!-- navbar -->
+  <nav class="navbar navbar-dark bg-dark navbar-expand-md text-light navbar-nav-scroll fixed-top py-4" id="nav">
+    <div class="container">
+        <p class="navbar-brand"><span class="h3">Educator Dashboard</span></p>
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar" id="navbar-toggler">
+            <i class="fas fa-angle-down" id="toggle-button"></i>
+        </button>
+        <div class="navbar-collapse collapse" id="navbar">
+            <ul class="navbar-nav ms-auto">  
+                <li class="nav-item"><a href="{% url 'account:profile' %}" class="nav-link text-light lead">
+                  <span id="nav-link">Profile</span></a></li>
+            </ul>
+        </div>
+    </div>
+  </nav>
+  <!-- end navbar -->
+
+  <div class="container py-5 mt-5">
+
+    {% include "account/messages.html" %}
+
+    {% if request.user.user_profile_educator.created_by_educator %}
+      {% if request.user.user_profile_educator.created_by_educator.submitted_verify == True %}
+
+        <!-- Modal publish quiz -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+              <form method="POST" action="{% url 'educator_dashboard' %}">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Publish Quiz</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                  {% csrf_token %}
+                  {{form|crispy}}
+          
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary d-grid gap-2 col-6 mx-auto fw-bold">Publish the quiz</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal2 delete quiz-->
+        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              
+                <form method="POST" action="{% url 'delete_quiz' %}">
+
+                  {% csrf_token %}
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete Quiz</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure want to delete this quiz?</p>                  
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary d-grid gap-2 col-5 mx-auto fw-bold" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger d-grid gap-2 col-5 mx-auto fw-bold">Yes</button>
+                  </div>
+                </form>
+              
+            </div>
+          </div>
+        </div>
+
+        <h3 class="text-center mt-5">Quiz</h3>
+
+        <div class="card mt-5">
+          <div class="card-body">
+            <div class="row d-flex align-items-center d-flex justify-content-center">
+              <div class="col d-flex justify-content-lg-start justify-content-center mb-2">
+                <h5 class="card-title">{{request.user.user_profile_educator.created_by_educator}}</h5>
+              </div>
+              {% if request.user.user_profile_educator.created_by_educator.publish_verify == True %}         
+                  <div class="col-lg-auto d-flex justify-content-center mb-3">
+                    <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal" disabled>published</button>
+                  </div>                        
+              {% else %}
+                <div class="col-lg-auto d-flex justify-content-center mb-3">
+                  <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal"
+                  data-bs-target="#exampleModal">Publish</button>
+                </div>
+              {% endif %}
+              <div class="col-lg-auto d-flex justify-content-center mb-3"><button type="button" class="btn btn-danger fw-bold" data-bs-toggle="modal"
+                data-bs-target="#exampleModal2">Delete Quiz</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="mt-5">
+
+        <h6>Student Marks</h6>
+        {% for student in student_mark %}
+          <p class="lead text-to-copy">{{student.student.user.email}} | {{student.mark}} Marks</p>
+        {% endfor %}
+        
+        {% if student_mark %}
+          <button onclick="copyText()" id="copy-button" class="btn btn-primary fw-bold d-grid gap-2 col-6 mx-auto mt-5">Copy Marks</button>
+        {% endif %}
+        
+      {% elif request.user.user_profile_educator.created_by_educator.submitted_verify == False %}
+        <p class="h3 text-center mt-5">You have already created a quiz - <b>{{request.user.user_profile_educator.created_by_educator}}</b> continue
+          creating questions</p>
+        <a href="{% url 'create_question'  %}" class="d-grid gap-2 col-6 mx-auto mt-5"><button class="btn btn-primary fw-bold" type="submit">create
+            questions</button></a>
+        <form action="{% url 'delete_quiz' %}" method="POST">
+          {% csrf_token %}
+          <button class="btn btn-danger d-grid gap-2 col-6 mx-auto mt-5 fw-bold" type="submit">Delete
+            quiz</button></a>
+        </form>
+      {% endif %}
+    {% else %}
+
+      <p class="text-center h3 py-5">Welcome to Educator Dashboard</p>
+    
+      <a href="{% url 'create_quiz' %}" class="d-grid gap-2 col-6 mx-auto"><button class="btn btn-primary fw-bold" type="submit">create
+          quizz</button></a>    
+    {% endif %}
+
+  </div>
+
+  <script>
+    function copyText() {
+
+          let textElements = document.querySelectorAll(".text-to-copy");
+
+          let concatenatedText = Array.from(textElements).map(function(element) {
+              return element.innerText;
+          }).join(' ');
+
+          let tempElement = document.createElement('textarea');
+          tempElement.value = concatenatedText;
+
+          document.body.appendChild(tempElement);
+
+          tempElement.select();
+          document.execCommand('copy');
+
+          document.body.removeChild(tempElement);
+    
+          document.getElementById("copy-button").innerText = "Copied!";
+    }
+  </script>
+
+{% endblock %}

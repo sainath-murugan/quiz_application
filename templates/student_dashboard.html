@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block title %}<title>Student Dashboard</title>{% endblock %}
+{% block content %}
+
+    <!-- navbar -->
+    <nav class="navbar navbar-dark bg-dark navbar-expand-md text-light navbar-nav-scroll fixed-top py-4" id="nav">
+        <div class="container">
+            <p class="navbar-brand"><span class="h3">Student Dashboard</span></p>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                id="navbar-toggler">
+                <i class="fas fa-angle-down" id="toggle-button"></i>
+            </button>
+            <div class="navbar-collapse collapse" id="navbar">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a href="{% url 'account:profile' %}" class="nav-link text-light lead"><span
+                        id="nav-link">Profile</span></a></li>
+                    <li class="nav-item"><a href="" class="nav-link text-light lead"><span
+                        id="nav-link">Contact</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- end navbar -->
+
+    <div class="container py-5">
+        {% include "account/messages.html" %}
+        <p class="h2 mt-5 text-center py-4 fw-bold">{{request.user}}</p>
+        {% for items in users %}
+            {% if items.created_by_educator.publish_verify == True %}
+                {% if items.created_by_educator.year == request.user.user_profile_student.year and request.user.user_profile_student.course in items.created_by_educator.student_dept.all %}
+                    <p class="h4">Educator: {{items.user.email}}</p>
+                    <div class="card mt-3 mb-3">
+                        <div class="card-body">
+                            <div class="row row d-flex align-items-center d-flex justify-content-center">
+                                <div class="col col d-flex justify-content-lg-start justify-content-center">
+                                    <h5 class="card-title text-secondary fw-bold">{{items.created_by_educator}}</h5>
+                                </div>                                               
+                                {% if request.user.user_profile_student in items.created_by_educator.students_submitted.all %}
+                                    {% for i in request.user.user_profile_student.student_quiz_mark.all %}                                                                                                                                                       
+                                        {% if items.created_by_educator == i.quiz %}                                                                
+                                            <div class="col-auto">
+                                                <p class="fw-bold text-primary">{{i.mark}} Marks</p>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                         
+                                {% else %}
+                                <div class="col-lg-auto d-flex justify-content-center mb-3">
+                                    <a href="{% url 'attend_quiz' items.created_by_educator.id %}"> <button
+                                            type="submit" class="btn btn-primary fw-bold">attend</button></a>
+                                </div>
+                                {% endif %}                                                                                           
+                            </div>
+                        </div>
+                    </div>               
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+{% endblock %}  

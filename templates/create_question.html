@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block title %}<title>Create Questions</title>{% endblock %}
+{% block content %}
+
+	<div class="container py-5">
+		<p class="text-center h2 py-2">{{request.user.user_profile_educator.created_by_educator}}</p>
+		<h6 class="mb-3 text-center">you have created {{request.user.user_profile_educator.created_by_educator.question_created.all.count}} question</h6>
+			{% for items in request.user.user_profile_educator.created_by_educator.question_created.all %}
+				<fieldset disabled>
+					
+					<div class="mb-3">
+						<label for="disabledTextInput" class="h5 py-2">{{items.question}}</label>
+						<div class="mb-2">
+							<input type="text" id="disabledTextInput" class="form-control" placeholder="{{items.choice_one}}">
+						</div>
+						<div class="mb-2">
+							<input type="text" id="disabledTextInput" class="form-control" placeholder="{{items.choice_two}}">
+						</div>
+						<div class="mb-2">
+							<input type="text" id="disabledTextInput" class="form-control" placeholder="{{items.choice_three}}">
+						</div>
+						<div class="mb-2">
+							<input type="text" id="disabledTextInput" class="form-control" placeholder="{{items.choice_four}}">
+						</div>
+						<p>Correct Answer: <b>{{items.correct_ans}} st choice</b> </p>
+					</div>
+				</fieldset>
+				<hr>
+			{% endfor %}
+		
+
+		{% if request.user.user_profile_educator.created_by_educator.question_created.all.count >= 10 %}
+			<p class="text-center h6">you have created 10 questions, submit all questions</p>
+			<form method="POST" action="{% url 'submit_question' %}">
+				{% csrf_token %}
+				<div class="d-grid gap-2 col-6 mx-auto mt-4">
+					<button class="btn btn-primary fw-bold" type="submit">submit all questions</button>
+				</div>
+			</form>
+		{% else %}
+			<form method="POST" action="{% url 'create_question' %}">
+
+				{% csrf_token %}
+				{{form|crispy}}
+
+				<div class="d-grid gap-2 col-6 mx-auto">
+					<button class="btn btn-primary fw-bold" type="submit">add question</button>
+				</div>
+			</form>
+		{% endif %}
+	</div>
+
+{% endblock %}
